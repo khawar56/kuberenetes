@@ -166,6 +166,14 @@ sudo kubeadm join 172.31.71.210:6443 --token xxxxx --discovery-token-ca-cert-has
 kubeadm token create --print-join-command
 ```
 
+- we also need to make sure Master can see/list all worker nodes and worker nodes should be able to see and listen to master node. If `kubectl get pods` on worker nodes is returning connection refused error then we need to copy the kube config from master to all the nodes. 
+```
+for node in vm1 vm2 vm3 vm4 vm5 vm6 vm7; do
+     ssh $node  "mkdir $HOME/.kube" 
+     scp vm0:$HOME/.kube/config $node:$HOME/.kube/
+done
+```
+
 ## Validation
 
 If all the above steps were completed, you should be able to run `kubectl get nodes` on the master node, and it should return all the 3 nodes in ready status.
